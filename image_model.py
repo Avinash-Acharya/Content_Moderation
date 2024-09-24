@@ -14,17 +14,6 @@ processor = ViTImageProcessor.from_pretrained(MODEL)
 model.to(device)
 
 def detect_nsfw_image(url):
-    """
-    Detects whether an image from a given URL is NSFW (Not Safe For Work) or normal.
-    Args:
-        url (str): The URL of the image to be analyzed.
-    Returns:
-        str: The original URL if the image is normal, or a placeholder string if the image is NSFW.
-    Raises:
-        requests.exceptions.RequestException: If there is an issue with the HTTP request.
-        PIL.UnidentifiedImageError: If the image cannot be opened and identified.
-        torch.TorchException: If there is an issue with the PyTorch model inference.
-    """
 
     response = requests.get(url)
     if url.endswith(".svg") or response.status_code != 200:

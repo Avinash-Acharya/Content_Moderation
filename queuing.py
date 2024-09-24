@@ -10,7 +10,7 @@ class Agent:
         self.image_queue = queue.Queue()
         self.processed_text = []
         self.processed_image = None
-        # Start the worker threads
+
         self.text_thread = threading.Thread(target=self.process_text, daemon=True)
         self.image_thread = threading.Thread(target=self.process_image, daemon=True)
         self.text_thread.start()
@@ -21,7 +21,7 @@ class Agent:
             try:
                 sentence = self.text_queue.get(timeout=1)
                 respond_text = detect_hate_speech(sentence)
-                self.processed_text.append(respond_text)  # Store each processed sentence
+                self.processed_text.append(respond_text)  
                 self.text_queue.task_done()
             except queue.Empty:
                 continue
@@ -31,8 +31,6 @@ class Agent:
             try:
                 img_url = self.image_queue.get(timeout=1)
                 self.processed_image = detect_nsfw_image(img_url)
-                # respond_image = detect_nsfw_image(img)
-                # return respond_image
                 self.image_queue.task_done()
             except queue.Empty:
                 continue
@@ -60,11 +58,9 @@ def process_image_content(url):
     # print("BEFORE", url)
     if not isinstance(url, str) or not url.startswith(('http://', 'https://')):
         raise ValueError(f"Invalid URL: {url}")
-    # img_res=agent.process_image(url)
-    # return img_res
-    agent.processed_image = None  # Reset the processed_image
+    agent.processed_image = None  
     agent.image_queue.put(url)
-    agent.image_queue.join()  # Wait for the image to be processed
+    agent.image_queue.join()  
     # print("AFTER",agent.processed_image)
     return agent.processed_image
 

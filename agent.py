@@ -12,7 +12,6 @@ class Agent:
         self.image_queue = queue.Queue()
         self.shutdown_flag = threading.Event()
 
-        # Start the worker threads
         self.text_thread = threading.Thread(target=self.process_text_queue, daemon=True)
         self.image_thread = threading.Thread(target=self.process_image_queue, daemon=True)
         self.text_thread.start()
@@ -41,9 +40,6 @@ class Agent:
     def stop(self):
         self.shutdown_flag.set()
 
-# Create an agent instance with loaded models
-agent = Agent()
-
 @app.route('/process/text', methods=['POST'])
 def process_text_content():
     content = request.get_json()
@@ -51,15 +47,13 @@ def process_text_content():
     for sentence in sentences:
         agent.text_queue.put(sentence)
     return jsonify({'status': 'Text processing started'}), 202
-    # return Response(text_stream(sentences), content_type='text/event-stream')
 
 @app.route('/process/image', methods=['POST'])
 def process_image_content():
     content = request.get_json()
-    images = content['images']  # Assuming multiple images are sent in a list
+    images = content['images']  
     agent.image_queue.put(images)
     return jsonify({'status': 'Image processing started'}), 202
-    # return Response(image_stream(images), content_type='text/event-stream')
 
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
@@ -68,3 +62,5 @@ def shutdown():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+agent = Agent()

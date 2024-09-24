@@ -40,16 +40,6 @@ model = genai.GenerativeModel(
 chat_session = model.start_chat()
 
 def detect_hate_speech(text):
-    """
-    Detects and replaces hate speech in the given text.
-    This function uses a pre-trained model to identify whether the input text contains hate speech.
-    If hate speech is detected, it replaces the offensive content using a specified replacement function.
-    Otherwise, it returns the original text.
-    Args:
-      text (str): The input text to be analyzed for hate speech.
-    Returns:
-      str: The original text if no hate speech is detected, otherwise the text with hate speech replaced.
-    """
 
     if not text:
         return text
@@ -60,25 +50,12 @@ def detect_hate_speech(text):
     predicted_label = HFmodel.config.id2label[predicted_class_id]
     if predicted_label == "nothate":
         return text
-        # print("No hate speech detected")
     elif predicted_label == "hate":
         replaced_text = hate_speech_replacer(text)
         return replaced_text
-        # print("Hate speech detected")
-
 
 def hate_speech_replacer(text):
-    """
-    Replaces hate speech in the given text with positive language.
-    This function sends the input text to a chat session, which processes the text
-    and returns a response with hate speech replaced by positive language.
-    Args:
-      text (str): The input text that may contain hate speech.
-    Returns:
-      str: The text with hate speech replaced by positive language.
-    """
-    # print(text)
-        # Ensure the request payload is correctly formatted
+
     response = chat_session.send_message(text)
     response_json = json.loads(response.text)
     return response_json['positive']
