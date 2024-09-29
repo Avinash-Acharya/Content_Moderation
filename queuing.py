@@ -1,8 +1,12 @@
 import re
+import json
 import queue
 import threading
-from text_model import detect_hate_speech
+from video_model import fake_video_news
 from image_model import detect_nsfw_image
+from text_model import detect_hate_speech
+from news_fakery import fake_news_detector
+from ytlink import get_youtube_links_from_url
 
 class Agent:
     def __init__(self):
@@ -63,5 +67,35 @@ def process_image_content(url):
     agent.image_queue.join()  
     # print("AFTER",agent.processed_image)
     return agent.processed_image
+
+# def process_url(url):
+#     article_response = fake_news_detector(url)
+#     if article_response.text['fake']==False:
+#         ytlink_list = get_youtube_links_from_url(url)
+#         video_response = {}
+#         for link , i in ytlink_list:
+#             response = fake_video_news(link)
+#             video_response["Video {i}"] = response
+#         combined_response = {
+#             "Article": article_response,
+#             "Video": video_response
+#         }    
+#     return combined_response
+
+def process_url_content(url):
+    article_response = fake_news_detector(url)
+    article_response_json = json.loads(article_response)
+    combined_response = {"Article": article_response_json}
+
+    if article_response_json['fake'] == False:
+        ytlink_list = get_youtube_links_from_url(url)
+        video_response = {}
+        for i, link in enumerate(ytlink_list):
+            response = fake_video_news(link)
+            video_response[f"Video {i}"] = response
+
+        combined_response["Video"] = video_response
+
+    return combined_response
 
 agent = Agent()

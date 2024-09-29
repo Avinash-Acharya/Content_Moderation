@@ -15,6 +15,7 @@ model.to(device)
 
 def detect_nsfw_image(url):
 
+    print("- Detecting NSFW Image...")
     response = requests.get(url)
     if url.endswith(".svg") or response.status_code != 200:
         return url
@@ -29,6 +30,7 @@ def detect_nsfw_image(url):
     predicted_label = logits.argmax(-1).item()
     label = model.config.id2label[predicted_label]
     if label == "nsfw":
+        print("- Replaceing NSFW Image...")
         return cat
     elif label == "normal":
         return url

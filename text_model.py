@@ -41,6 +41,7 @@ chat_session = model.start_chat()
 
 def detect_hate_speech(text):
 
+    print("- Detecting hate speech...")
     if not text:
         return text
     inputs = HFtokenizer(text, return_tensors="pt")
@@ -56,6 +57,7 @@ def detect_hate_speech(text):
 
 def hate_speech_replacer(text):
 
+    print("- Replacing hate speech...") 
     response = chat_session.send_message(text)
     response_json = json.loads(response.text)
     return response_json['positive']
