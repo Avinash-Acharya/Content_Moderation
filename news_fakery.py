@@ -68,6 +68,15 @@ model2 = genai.GenerativeModel(
 chat_session2 = model2.start_chat()
 
 def fake_news_detector(text):
+    """
+    Detects if the given news article text is fake or real.
+    This function sends the provided text to a chat session for analysis
+    and returns the result indicating whether the news article is fake or real.
+    Args:
+      text (str): The news article text to be analyzed.
+    Returns:
+      str: The result from the chat session indicating if the news is fake or real in JSON.
+    """
     
     print("Detecting if the news article is fake or real...")
     response = chat_session2.send_message(text)
@@ -75,6 +84,15 @@ def fake_news_detector(text):
     return result
 
 def fake_video_detector(text):
+    """
+    Detects if the video described by the given text is fake or real.
+    This function sends the provided text to a chat session for analysis and 
+    returns the result indicating whether the video is fake or real.
+    Args:
+      text (str): The transcription of the video to be analyzed.
+    Returns:
+      str: The result from the chat session indicating if the video is fake or real in JSON.
+    """
     
     print("Detecting if the video is fake or real...")
     response = chat_session1.send_message(text)

@@ -4,6 +4,24 @@ from urllib.parse import urljoin
 from custom_css import DARK_THEME_CSS
 
 def scrape_content(url):
+    """
+    Scrapes content from a given URL and processes it.
+    This function fetches the HTML content from the specified URL, parses it using BeautifulSoup,
+    and extracts text elements, image elements, and styles. It also converts relative image URLs
+    to absolute URLs and appends a custom dark theme CSS to the HTML head.
+    Args:
+        url (str): The URL of the webpage to scrape.
+    Returns:
+        tuple: A tuple containing:
+            - content (dict): A dictionary with the following keys:
+                - 'text' (list): A list of text content from <p>, <h1>, <h2>, <h3>, <span>, <a>, and <li> elements.
+                - 'images' (list): A list of absolute URLs of images.
+                - 'styles' (ResultSet): A BeautifulSoup ResultSet of <style> elements.
+                - 'css_links' (ResultSet): A BeautifulSoup ResultSet of <link> elements with rel="stylesheet".
+            - soup (BeautifulSoup): The BeautifulSoup object of the parsed HTML content.
+    Raises:
+        requests.exceptions.RequestException: If there is an error fetching the content from the URL.
+    """
 
     try:
         response = requests.get(url, timeout=10)
