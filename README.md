@@ -1,4 +1,4 @@
-# Arishtha
+# Arishta
 
 A 'Content Moderation Tool' utilizing Multimodal Agentic approach which can be embedded within an Browser.
 
