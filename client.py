@@ -1,4 +1,5 @@
 import gradio as gr
+# import subprocess
 # import concurrent.futures
 from scrape import scrape_content
 from queuing import process_text_content, process_image_content, process_url_content
@@ -20,7 +21,8 @@ def process_content(url, toggle_state):
         - If `toggle_state` is True, additional processing is performed on the URL content.
         - The function uses BeautifulSoup to manipulate HTML content.
     """
-
+    # subprocess.run(["echo", "- Working on new URL..."])
+    print("- Working on new URL...")
     json_result = None
     content, soup = scrape_content(url)
     if soup is None:

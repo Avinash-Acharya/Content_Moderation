@@ -1,6 +1,7 @@
 import os
 import json
 import torch
+# import subprocess
 from dotenv import load_dotenv
 import google.generativeai as genai
 from google.ai.generativelanguage_v1beta.types import content
@@ -77,6 +78,7 @@ def hate_speech_replacer(text):
   """
 
   print("- Replacing hate speech...") 
+  # subprocess.run(["echo", "- Replacing hate speech..."])
   response = chat_session.send_message(text)
   response_json = json.loads(response.text)
   return response_json['positive']

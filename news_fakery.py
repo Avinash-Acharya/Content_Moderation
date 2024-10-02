@@ -1,4 +1,5 @@
 import os
+# import subprocess
 from dotenv import load_dotenv
 import google.generativeai as genai
 from google.ai.generativelanguage_v1beta.types import content
@@ -78,7 +79,8 @@ def fake_news_detector(text):
       str: The result from the chat session indicating if the news is fake or real in JSON.
     """
     
-    print("Detecting if the news article is fake or real...")
+    print("- Detecting if the news article is fake or real...")
+    # subprocess.run(["echo", "- Detecting if the news article is fake or real..."])
     response = chat_session2.send_message(text)
     result = response.text
     return result
@@ -94,7 +96,8 @@ def fake_video_detector(text):
       str: The result from the chat session indicating if the video is fake or real in JSON.
     """
     
-    print("Detecting if the video is fake or real...")
+    print("- Detecting if the video is fake or real...")
+    # subprocess.run(["echo", "- Detecting if the video is fake or real..."])
     response = chat_session1.send_message(text)
     result = response.text
     return result

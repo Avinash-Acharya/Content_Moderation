@@ -1,4 +1,5 @@
 import requests
+# import subprocess
 from bs4 import BeautifulSoup
 
 
@@ -18,6 +19,7 @@ def extract_youtube_links(html_content):
     """
 
     print("- Extracting YouTube links...")
+    # subprocess.run(["echo", "- Extracting YouTube links..."])
     soup = BeautifulSoup(html_content, 'html.parser')
     youtube_links = []
 
@@ -48,6 +50,7 @@ def get_youtube_links_from_url(url):
     """
 
     print("- Retrieving content from URL...")
+    # subprocess.run(["echo", "- Retrieving content from URL..."])
     response = requests.get(url)
     if response.status_code == 200:
         youtube_links = extract_youtube_links(response.text)

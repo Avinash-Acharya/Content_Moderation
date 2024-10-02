@@ -1,15 +1,21 @@
 import torch
 import base64
 import requests
+# import subprocess
 from PIL import Image
 from io import BytesIO
 from transformers import AutoModelForImageClassification, ViTImageProcessor
 
 # cat = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeKOOpLy92UjzQxq8NCxgxOQJbj_YVdfHO_g&s"
-cat = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg"
-cat_image_response = requests.get(cat)
-cat_image_data = base64.b64encode(cat_image_response.content).decode('utf-8')
-cat_image_base64 = f"data:image/jpeg;base64,{cat_image_data}"
+# cat = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg"
+# cat_image_response = requests.get(cat)
+# cat_image_data = base64.b64encode(cat_image_response.content).decode('utf-8')
+# cat_image_base64 = f"data:image/jpeg;base64,{cat_image_data}"
+local_image_path = './media/car.png'
+with open(local_image_path, 'rb') as image_file:
+    car_image_data = base64.b64encode(image_file.read()).decode('utf-8')
+car_image_base64 = f"data:image/png;base64,{car_image_data}"
+
 MODEL = "Falconsai/nsfw_image_detection"
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -35,6 +41,7 @@ def detect_nsfw_image(url):
     """
 
     print("- Detecting NSFW Image...")
+    # subprocess.run(["echo", "- Detecting NSFW Image..."])
     response = requests.get(url)
     if url.endswith(".svg") or response.status_code != 200:
         return url
@@ -50,7 +57,8 @@ def detect_nsfw_image(url):
     label = model.config.id2label[predicted_label]
     if label == "nsfw":
         print("- Replaceing NSFW Image...")
-        return cat
+        # subprocess.run(["echo", "- Replaceing NSFW Image..."])
+        return car_image_base64
     elif label == "normal":
         return url
 

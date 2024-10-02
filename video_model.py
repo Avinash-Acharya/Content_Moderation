@@ -18,7 +18,7 @@ model = Wav2Vec2ForCTC.from_pretrained(S2T_MODEL_ID)
 Smodel.to(device)
 model.to(device)
 
-def download_audio(url, output_file, max_duration=60):
+def download_audio(url, output_file, max_duration=100):
     """
     Downloads the audio from a given YouTube URL and saves it as an MP3 file.
     This function uses the yt-dlp tool to download the audio from a YouTube video.
@@ -36,6 +36,7 @@ def download_audio(url, output_file, max_duration=60):
     """
 
     print("- Downloading audio...")
+    # subprocess.run(["echo", "- Downloading audio..."])
     result = subprocess.run(
         ["yt-dlp", "--skip-download", "--print-json", url],
         stdout=subprocess.PIPE, text=True
@@ -63,6 +64,7 @@ def transcribe_audio(audio_file):
     """
 
     print("- Transcribing audio...")
+    # subprocess.run(["echo", "- Transcribing audio..."])
     audio_data, _ = librosa.load(audio_file, sr=16000)
     inputs = processor(audio_data, sampling_rate=16000, return_tensors="pt", padding=True)
     with torch.no_grad():
@@ -86,6 +88,7 @@ def summarize_text(text):
     """
     
     print("- Summarizing text...")
+    # subprocess.run(["echo", "- Summarizing text..."])
     input_ids = Stokenizer(text, return_tensors="pt")
     outputs = Smodel.generate(**input_ids, max_length=100, min_length=40)
     summarized = Stokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -113,6 +116,7 @@ def fake_video_news(url):
     """
 
     print("- Processing video...")
+    # subprocess.run(["echo", "- Processing video..."])
     start_time = time.time()
     output_file = "./audio.mp3"
     delete_after_process = True 
@@ -126,10 +130,12 @@ def fake_video_news(url):
     if delete_after_process and os.path.exists(output_file):
         os.remove(output_file)
         print(f"File {output_file} has been deleted.")
+        # subprocess.run(["echo", f"File {output_file} has been deleted."])
 
     end_time = time.time()
     time_taken = end_time - start_time
-    print(f"Time taken: {time_taken:.2f} seconds")
+    print(f"Time taken to analyze: {time_taken:.2f} seconds")
+    # subprocess.run(["echo", f"Time taken to analyze: {time_taken:.2f} seconds"])
     # print(result)
     # {"is_factual": false, "is_opinionated": false}
     return result
