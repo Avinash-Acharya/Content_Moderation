@@ -17,6 +17,7 @@ _Figure 2: Admin Page_
 To run this project, you will be needing the following environment variable. Where to add one will be discussed later.
 
 `GEMINI_API_KEY` - This can be accessed from [Google AI Studio](https://aistudio.google.com/app/prompts/new_chat/?utm_source=hackathon&utm_medium=referral&utm_campaign=Devfolio&utm_content=)
+
 `ELEVENLABS_API_KEY` - This can be accessed from [ElevenLabs](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
 
 ### Prerequisites:
