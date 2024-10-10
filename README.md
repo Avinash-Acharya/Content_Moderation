@@ -17,6 +17,7 @@ _Figure 2: Admin Page_
 To run this project, you will be needing the following environment variable. Where to add one will be discussed later.
 
 `GEMINI_API_KEY` - This can be accessed from [Google AI Studio](https://aistudio.google.com/app/prompts/new_chat/?utm_source=hackathon&utm_medium=referral&utm_campaign=Devfolio&utm_content=)
+`ELEVENLABS_API_KEY` - This can be accessed from [ElevenLabs](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
 
 ### Prerequisites:
 
@@ -25,34 +26,36 @@ To run this project, you will be needing the following environment variable. Whe
 
 ## Run Locally
 
-Start with creating an Virtual Environment and activating it. ( for windows )
+- Start with creating an Virtual Environment and activating it. ( for windows )
 
 ```bash
 python -m venv myenv
 myenv/Scripts/activate
 ```
 
-Clone this Repository
+- Clone this Repository
 
 ```bash
 git clone https://github.com/Avinash-Acharya/Content_Moderation.git
 ```
 
-Now create a `.env` file in the root directory of this project and add an variable `GEMINI_API_KEY` with key that you obtained by following the steps till now.
-Something Like this ;
+- Now create a `.env` file in the root directory of this project and add an variable `GEMINI_API_KEY` and `ELEVENLABS_API_KEY` with key that you obtained by following the steps till now.
+  Something Like this ;
 
 ```bash
-GEMINI_API_KEY = Ahfksckiljdcoajsidf8wur34rfnk
-  (This is an example and not an actual key)
+GEMINI_API_KEY = "Ahfksckiljdcoajsidf8wur34rfnk"
+ELEVENLABS_API_KEY = "fdgacbhjkscndihfkjsdncvkjdnvkjvcksj"
 ```
 
-Install the necessary Python Libraries
+_(This is an example and not an actual key)_
+
+- Install the necessary Python Libraries
 
 ```bash
 pip install -r requirements.txt
 ```
 
-And at last you can run Gradio Application to view the working proto-type
+- And at last you can run Gradio Application to view the working proto-type
 
 ```bash
 python client.py

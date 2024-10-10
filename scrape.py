@@ -23,7 +23,6 @@ def scrape_content(url):
     Raises:
         requests.exceptions.RequestException: If there is an error fetching the content from the URL.
     """
-    # subprocess.run(["echo", "- Scraping content from URL..."])
     print("- Scraping content from URL...")
     try:
         response = requests.get(url, timeout=10)

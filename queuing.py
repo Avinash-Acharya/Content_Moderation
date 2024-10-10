@@ -8,6 +8,7 @@ from image_model import detect_nsfw_image
 from text_model import detect_hate_speech
 from news_fakery import fake_news_detector
 from ytlink import get_youtube_links_from_url
+from audioSum import audio_summarize
 
 class Agent:
     """
@@ -142,5 +143,10 @@ def process_url_content(url):
         combined_response["Video"] = video_response
 
     return combined_response
+
+def process_audio_content(url):
+    
+    result = audio_summarize(url)
+    return result
 
 agent = Agent()

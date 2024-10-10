@@ -2,37 +2,30 @@ import os
 import json
 import time
 import torch
-import librosa
+import whisper
 import subprocess
+from summarizer import summarize
 from news_fakery import fake_video_detector
-from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor , AutoTokenizer, AutoModelForSeq2SeqLM
+# from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-S2T_MODEL_ID = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
-SUM_MODEL_ID = "Falconsai/text_summarization"
+# S2T_MODEL_ID = "jonatasgrosman/wav2vec2-large-xlsr-53-english"
+# SUM_MODEL_ID = "Falconsai/text_summarization"
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-Stokenizer = AutoTokenizer.from_pretrained(SUM_MODEL_ID)
-Smodel = AutoModelForSeq2SeqLM.from_pretrained(SUM_MODEL_ID)
-processor = Wav2Vec2Processor.from_pretrained(S2T_MODEL_ID)
-model = Wav2Vec2ForCTC.from_pretrained(S2T_MODEL_ID)
-Smodel.to(device)
-model.to(device)
+# Stokenizer = AutoTokenizer.from_pretrained(SUM_MODEL_ID)
+# Smodel = AutoModelForSeq2SeqLM.from_pretrained(SUM_MODEL_ID)
+model = whisper.load_model("base").to(device)
+# Smodel.to(device)
 
 def download_audio(url, output_file, max_duration=100):
     """
-    Downloads the audio from a given YouTube URL and saves it as an MP3 file.
-    This function uses the yt-dlp tool to download the audio from a YouTube video.
-    It first retrieves the video information to determine the duration of the video.
-    The audio is then downloaded and saved as an MP3 file, with an optional maximum duration limit.
-    Args:
-        url (str): The URL of the YouTube video to download the audio from.
-        output_file (str): The path where the downloaded audio file will be saved.
-        max_duration (int, optional): The maximum duration (in seconds) of the audio to download. Defaults to 60 seconds.
-    Raises:
-        subprocess.CalledProcessError: If the yt-dlp command fails.
-        json.JSONDecodeError: If the video information cannot be parsed.
-    Example:
-        download_audio("https://www.youtube.com/watch?v=example", "output.mp3", max_duration=30)
+    Downloads audio from a given YouTube URL and saves it as an MP3 file.
+    Parameters:
+    url (str): The URL of the YouTube video to download audio from.
+    output_file (str): The path where the downloaded audio file will be saved.
+    max_duration (int, optional): The maximum duration of the audio to download in seconds. Defaults to 100 seconds.
+    Returns:
+    None
     """
 
     print("- Downloading audio...")
@@ -54,44 +47,36 @@ def download_audio(url, output_file, max_duration=100):
 def transcribe_audio(audio_file):
     """
     Transcribes the given audio file into text.
-    This function loads an audio file, processes it using a pre-trained model, 
-    and returns the transcribed text. It uses the `librosa` library to load 
-    the audio data and a pre-trained model for transcription.
     Args:
-        audio_file (str): Path to the audio file to be transcribed.
+        audio_file (str): The path to the audio file to be transcribed.
     Returns:
         str: The transcribed text from the audio file.
     """
 
+    # start_time = time.time()
     print("- Transcribing audio...")
     # subprocess.run(["echo", "- Transcribing audio..."])
-    audio_data, _ = librosa.load(audio_file, sr=16000)
-    inputs = processor(audio_data, sampling_rate=16000, return_tensors="pt", padding=True)
-    with torch.no_grad():
-        logits = model(inputs.input_values, attention_mask=inputs.attention_mask).logits
-    predicted_ids = torch.argmax(logits, dim=-1)
-    predicted_sentence = processor.decode(predicted_ids[0])
-    return predicted_sentence  
+    result = model.transcribe(audio_file)
+    # end_time = time.time()
+    # time_taken = end_time - start_time
+    # print(f"Transcribed text: {result["text"]}")
+    # print(f"Time taken to Transcribe: {time_taken:.2f} seconds")
+    return result["text"]  
 
 def summarize_text(text):
     """
-    Summarizes the given text using a pre-trained language model.
+    Summarizes the given text using a summarization model.
     Args:
         text (str): The text to be summarized.
     Returns:
         str: The summarized version of the input text.
-    Note:
-        This function uses a tokenizer (Stokenizer) and a model (Smodel) 
-        to generate the summary. The tokenizer converts the input text 
-        into tokens, and the model generates the summary based on these tokens.
-        The summary length is controlled by the max_length and min_length parameters.
     """
-    
+
     print("- Summarizing text...")
-    # subprocess.run(["echo", "- Summarizing text..."])
-    input_ids = Stokenizer(text, return_tensors="pt")
-    outputs = Smodel.generate(**input_ids, max_length=100, min_length=40)
-    summarized = Stokenizer.decode(outputs[0], skip_special_tokens=True)
+    # input_ids = Stokenizer(text, return_tensors="pt")
+    # outputs = Smodel.generate(**input_ids, max_length=100, min_length=40)
+    # summarized = Stokenizer.decode(outputs[0], skip_special_tokens=True)
+    summarized = summarize(text)
     return summarized
 
 def fake_video_news(url):
@@ -116,28 +101,21 @@ def fake_video_news(url):
     """
 
     print("- Processing video...")
-    # subprocess.run(["echo", "- Processing video..."])
     start_time = time.time()
     output_file = "./audio.mp3"
     delete_after_process = True 
 
     download_audio(url, output_file)
     transcript = transcribe_audio(output_file)
-    # transcript = download_audio(url, output_file)
     summary = summarize_text(transcript)
     result = fake_video_detector(summary)
 
     if delete_after_process and os.path.exists(output_file):
         os.remove(output_file)
         print(f"File {output_file} has been deleted.")
-        # subprocess.run(["echo", f"File {output_file} has been deleted."])
 
     end_time = time.time()
     time_taken = end_time - start_time
     print(f"Time taken to analyze: {time_taken:.2f} seconds")
-    # subprocess.run(["echo", f"Time taken to analyze: {time_taken:.2f} seconds"])
-    # print(result)
-    # {"is_factual": false, "is_opinionated": false}
     return result
 
-# url = "https://www.youtube.com/watch?v=ieK1PTXmopE&pp=ygUKb25pb24gbmV3cw%3D%3D"
